@@ -1,37 +1,156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Path of Signs Mini App</title>
-  <link rel="stylesheet" href="styles.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Grimoire</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1a1208;--parchment:#f5ead6;--parchment-dark:#e8d5b0;--parchment-deeper:#d4b896;--ember:#8b3a0f;--ember-glow:#c45c1a;--moss:#3d5a2e;--gold:#9a7230;--gold-light:#c9a84c}
+body{background:var(--ink);font-family:'Crimson Pro',Georgia,serif;color:var(--ink);min-height:100vh}
+.page-bg{min-height:100vh;background:radial-gradient(ellipse 80% 60% at 50% 0%,#2a1a06 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 20% 80%,#1e0e04 0%,transparent 60%),#0f0a04;overflow:hidden}
+.smoke{position:fixed;width:2px;height:60px;border-radius:50%;background:linear-gradient(to top,transparent,rgba(200,160,80,0.08),transparent);animation:drift 6s ease-in-out infinite;pointer-events:none}
+.smoke:nth-child(1){left:15%;top:60%;animation-delay:0s}
+.smoke:nth-child(2){left:85%;top:55%;animation-delay:2s}
+.smoke:nth-child(3){left:50%;top:65%;animation-delay:4s}
+@keyframes drift{0%,100%{transform:translateY(0) scaleX(1);opacity:0}30%{opacity:1}70%{transform:translateY(-80px) scaleX(3);opacity:0.4}}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(15,10,4,0.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(154,114,48,0.25)}
+.nav-sigil{font-family:'Cinzel Decorative',serif;font-size:0.75rem;color:var(--gold-light);letter-spacing:0.2em;text-transform:uppercase;opacity:0.85}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:'Crimson Pro',serif;font-size:0.85rem;letter-spacing:0.15em;color:var(--parchment-deeper);text-decoration:none;text-transform:uppercase;transition:color 0.3s;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:var(--gold-light)}
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 2rem 4rem;text-align:center}
+.moon{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#f5e8c0,#c9a84c 40%,#7a5a1a 75%,transparent);box-shadow:0 0 40px rgba(201,168,76,0.3),0 0 80px rgba(201,168,76,0.12);margin-bottom:2.5rem;position:relative;animation:moonpulse 4s ease-in-out infinite}
+.moon::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 60% 35%,transparent 30%,rgba(0,0,0,0.35) 100%)}
+@keyframes moonpulse{0%,100%{box-shadow:0 0 40px rgba(201,168,76,0.3),0 0 80px rgba(201,168,76,0.12)}50%{box-shadow:0 0 60px rgba(201,168,76,0.5),0 0 120px rgba(201,168,76,0.2)}}
+.hero-title{font-family:'Cinzel Decorative',serif;font-size:clamp(2.2rem,6vw,4rem);font-weight:400;color:var(--gold-light);letter-spacing:0.04em;line-height:1.15;text-shadow:0 0 40px rgba(201,168,76,0.5);margin-bottom:0.5rem}
+.hero-subtitle{font-family:'IM Fell English',Georgia,serif;font-style:italic;font-size:1.1rem;color:var(--parchment-deeper);letter-spacing:0.05em;margin-bottom:3rem;opacity:0.8}
+.divider{display:flex;align-items:center;gap:1rem;width:100%;max-width:500px;margin:0 auto 3rem}
+.divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)}
+.divider-glyph{color:var(--gold);font-size:1rem;opacity:0.7}
+.tabs{display:flex;justify-content:center;gap:0.5rem;flex-wrap:wrap;padding:0 2rem 2rem}
+.tab-btn{font-family:'Crimson Pro',serif;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 1.5rem;border:1px solid rgba(154,114,48,0.4);background:rgba(154,114,48,0.05);color:var(--parchment-deeper);cursor:pointer;border-radius:2px;transition:all 0.3s}
+.tab-btn:hover,.tab-btn.active{border-color:var(--gold-light);color:var(--gold-light);background:rgba(154,114,48,0.18)}
+main{max-width:900px;margin:0 auto;padding:0 2rem 6rem}
+.section{display:none;animation:fadeIn 0.5s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.parchment-card{background:rgba(245,234,214,0.04);border:1px solid rgba(154,114,48,0.3);border-radius:2px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.parchment-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0.5}
+.entry-tag{display:inline-block;font-family:'Crimson Pro',serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(154,114,48,0.4);padding:0.15rem 0.6rem;border-radius:1px;margin-bottom:0.75rem}
+.entry-date{font-family:'IM Fell English',serif;font-style:italic;font-size:0.8rem;color:var(--parchment-deeper);opacity:0.6;margin-bottom:0.75rem}
+.entry-title{font-family:'Cinzel Decorative',serif;font-size:1.1rem;font-weight:400;color:var(--gold-light);margin-bottom:0.75rem;letter-spacing:0.02em;line-height:1.4}
+.entry-body{font-family:'Crimson Pro',serif;font-size:1.05rem;line-height:1.8;color:var(--parchment-dark);font-weight:300}
+.entry-body em{font-style:italic;color:var(--parchment)}
+.rune-marker{float:right;font-size:1.8rem;color:var(--gold);opacity:0.25;margin-left:1rem;line-height:1}
+.knowledge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.knowledge-node{border:1px solid rgba(154,114,48,0.25);padding:1.25rem;background:rgba(245,234,214,0.03);border-radius:2px;cursor:pointer;transition:all 0.3s;text-align:center}
+.knowledge-node:hover{border-color:rgba(154,114,48,0.6);background:rgba(154,114,48,0.08);transform:translateY(-2px)}
+.node-glyph{font-size:2rem;margin-bottom:0.5rem;display:block}
+.node-name{font-family:'Cinzel Decorative',serif;font-size:0.7rem;color:var(--gold-light);letter-spacing:0.1em}
+.node-count{font-family:'Crimson Pro',serif;font-size:0.8rem;color:var(--parchment-deeper);opacity:0.6;margin-top:0.25rem}
+.experiment-row{display:flex;align-items:flex-start;gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid rgba(154,114,48,0.15)}
+.experiment-row:last-child{border-bottom:none}
+.exp-status{width:10px;height:10px;border-radius:50%;margin-top:0.4rem;flex-shrink:0}
+.exp-status.ongoing{background:var(--ember-glow);box-shadow:0 0 8px var(--ember-glow)}
+.exp-status.complete{background:var(--moss);box-shadow:0 0 8px rgba(61,90,46,0.6)}
+.exp-status.paused{background:var(--gold);opacity:0.5}
+.exp-meta{flex:1}
+.exp-title{font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold-light);margin-bottom:0.4rem;line-height:1.4}
+.exp-desc{font-family:'Crimson Pro',serif;font-size:0.95rem;color:var(--parchment-deeper);line-height:1.7;font-weight:300;opacity:0.8}
+.exp-label{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.15rem 0.5rem;border-radius:1px;flex-shrink:0;margin-top:0.2rem;font-family:'Crimson Pro',serif}
+.exp-label.ongoing{color:var(--ember-glow);border:1px solid rgba(196,92,26,0.4)}
+.exp-label.complete{color:#5a8c46;border:1px solid rgba(61,90,46,0.4)}
+.exp-label.paused{color:var(--gold);border:1px solid rgba(154,114,48,0.4);opacity:0.7}
+.discovery-timeline{position:relative;padding-left:2rem}
+.discovery-timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);opacity:0.3}
+.discovery-item{position:relative;margin-bottom:2rem}
+.discovery-item::before{content:'✦';position:absolute;left:-2.4rem;color:var(--gold);font-size:0.6rem;top:0.35rem;opacity:0.7}
+.discovery-when{font-family:'IM Fell English',serif;font-style:italic;font-size:0.8rem;color:var(--gold);opacity:0.7;margin-bottom:0.4rem}
+.discovery-title{font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--gold-light);margin-bottom:0.5rem;line-height:1.4}
+.discovery-body{font-family:'Crimson Pro',serif;font-size:1rem;line-height:1.75;color:var(--parchment-deeper);font-weight:300;opacity:0.85}
+.section-header{text-align:center;padding:2rem 0 2.5rem}
+.section-header h2{font-family:'Cinzel Decorative',serif;font-size:1.3rem;font-weight:400;color:var(--gold-light);letter-spacing:0.05em;margin-bottom:0.5rem}
+.section-header p{font-family:'IM Fell English',serif;font-style:italic;font-size:0.95rem;color:var(--parchment-deeper);opacity:0.65}
+footer{text-align:center;padding:3rem 2rem;border-top:1px solid rgba(154,114,48,0.15);font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:var(--gold);opacity:0.4}
+</style>
 </head>
 <body>
-  <aside>
-    <div class="brand"><div class="sigil">🌙🗝️🌊</div><h1>Path of Signs</h1><p>Follow the Path. Trust the Tide.</p></div>
-    <button class="nav active" data-page="home">Home</button>
-    <button class="nav" data-page="resonance">Resonance Reminder</button>
-    <button class="nav" data-page="crystals">Crystal Library</button>
-    <button class="nav" data-page="signs">Signs Log</button>
-    <button class="nav" data-page="symbols">Symbol Library</button>
-    <button class="nav" data-page="moon">Moon Notes</button>
-    <button class="nav" data-page="practices">Practices</button>
-    <button class="nav" data-page="export">Backup / Restore</button>
-  </aside>
-  <main>
-    <section id="home" class="page active">
-      <h2>Path of Signs</h2>
-      <div class="card"><h3>Follow the Path. Trust the Tide.</h3><p>This is my personal digital grimoire: part knowledge library, part journal, part experiment log, and part record of discovery.</p><blockquote>What are some traditional uses and meanings?<br>Which ones resonate with me?</blockquote><p><strong>My goal is not to become someone else. My goal is to enrich an already beautiful life.</strong></p></div>
-      <div class="symbols"><div>🗝️<span>Key</span></div><div>🛤️<span>Path</span></div><div>🌊<span>Tide</span></div><div>🪞<span>Mirror</span></div><div>🪶<span>Feather</span></div></div>
-    </section>
-    <section id="resonance" class="page"><h2>Resonance Reminder</h2><div class="card"><p>A grounding check-in before reading signs, pulling cards, doing rituals, or asking for guidance.</p><label>Where am I right now?</label><textarea data-save="resonance.current"></textarea><label>What am I seeking?</label><textarea data-save="resonance.seeking"></textarea><label>Reminder to myself</label><textarea data-save="resonance.reminder">I do not need to force myself into joy. I only need to move one step softer, clearer, and more honest.</textarea><button class="save">Save Notes</button></div></section>
-    <section id="crystals" class="page"><div class="topline"><h2>Crystal Library</h2><button onclick="addCrystal()">+ Add Crystal</button></div><p class="hint">Cards stay compact. Open each section when you want to read or edit details. Add your own photo for each stone.</p><div id="crystalList" class="crystal-stack"></div></section>
-    <section id="signs" class="page"><div class="topline"><h2>Signs & Synchronicities</h2><button onclick="addSign()">+ Add Sign</button></div><div id="signList"></div></section>
-    <section id="symbols" class="page"><div class="topline"><h2>Symbol Library</h2><button onclick="addSymbol()">+ Add Symbol</button></div><div id="symbolList" class="grid"></div></section>
-    <section id="moon" class="page"><div class="topline"><h2>Moon Notes</h2><button onclick="addMoon()">+ Add Moon Entry</button></div><div id="moonList"></div></section>
-    <section id="practices" class="page"><div class="topline"><h2>Practices & Rituals</h2><button onclick="addPractice()">+ Add Practice</button></div><div id="practiceList"></div></section>
-    <section id="export" class="page"><h2>Backup / Restore</h2><div class="card"><h3>Backup your grimoire</h3><p>This app saves to your browser. Before changing computers, click backup and save the file somewhere safe.</p><button onclick="downloadBackup()">Download Backup</button></div><div class="card"><h3>Restore from backup</h3><input type="file" id="restoreFile" accept=".json"/><button onclick="restoreBackup()">Restore Backup</button></div><div class="card danger"><h3>Careful</h3><button onclick="clearAll()">Clear All Saved Data</button></div></section>
-  </main>
-<script src="script.js"></script>
+<div class="page-bg">
+<div class="smoke"></div><div class="smoke"></div><div class="smoke"></div>
+<nav>
+<span class="nav-sigil">✦ The Grimoire ✦</span>
+<ul class="nav-links">
+<li><a onclick="showSection('journal')" class="active" id="nav-journal">Journal</a></li>
+<li><a onclick="showSection('library')" id="nav-library">Library</a></li>
+<li><a onclick="showSection('experiments')" id="nav-experiments">Experiments</a></li>
+<li><a onclick="showSection('discoveries')" id="nav-discoveries">Discoveries</a></li>
+</ul>
+</nav>
+<section class="hero">
+<div class="moon"></div>
+<h1 class="hero-title">My Digital Grimoire</h1>
+<p class="hero-subtitle">a record of wandering minds & wondering hands</p>
+<div class="divider"><div class="divider-line"></div><span class="divider-glyph">🌙</span><div class="divider-line"></div></div>
+</section>
+<div class="tabs">
+<button class="tab-btn active" onclick="showSection('journal')" id="tab-journal">✦ Journal</button>
+<button class="tab-btn" onclick="showSection('library')" id="tab-library">📚 Library</button>
+<button class="tab-btn" onclick="showSection('experiments')" id="tab-experiments">⚗️ Experiments</button>
+<button class="tab-btn" onclick="showSection('discoveries')" id="tab-discoveries">🌿 Discoveries</button>
+</div>
+<main>
+<div id="section-journal" class="section active">
+<div class="section-header"><h2>The Journal</h2><p>thoughts captured before they dissolve back into the air</p></div>
+<div class="parchment-card"><span class="rune-marker">☽</span><div class="entry-tag">Reflection</div><div class="entry-date">First Frost Moon</div><div class="entry-title">On Beginning</div><div class="entry-body">Every grimoire starts the same way — a blank page and the audacity to believe that what lives in your head is worth preserving. I'm starting this one not because I have answers, but because I keep losing the questions. <em>Better to write them down where I can find them again.</em></div></div>
+<div class="parchment-card"><span class="rune-marker">✦</span><div class="entry-tag">Observation</div><div class="entry-date">Waning Harvest Moon</div><div class="entry-title">The Library Has No Walls</div><div class="entry-body">I've been collecting knowledge the way magpies collect foil — drawn to the glint, not always sure what to do with it after. Today I want to try something different: building connections between things instead of just accumulating them. Threads, not beads.</div></div>
+<div class="parchment-card"><span class="rune-marker">🌿</span><div class="entry-tag">Dream-note</div><div class="entry-date">Dark Moon, late</div><div class="entry-title">What I Carry</div><div class="entry-body">Woke at 3am with a thought that felt enormous and is now mostly gone. What remains: something about the difference between <em>learning about</em> a thing and <em>knowing</em> it. The body knows differently than the mind. I want this grimoire to hold both kinds.</div></div>
+</div>
+<div id="section-library" class="section">
+<div class="section-header"><h2>The Library</h2><p>knowledge gathered, tended, and cross-pollinated</p></div>
+<div class="knowledge-grid">
+<div class="knowledge-node"><span class="node-glyph">🌱</span><div class="node-name">Herbalism</div><div class="node-count">12 entries</div></div>
+<div class="knowledge-node"><span class="node-glyph">🌙</span><div class="node-name">Lunar Cycles</div><div class="node-count">7 entries</div></div>
+<div class="knowledge-node"><span class="node-glyph">📖</span><div class="node-name">Myth & Lore</div><div class="node-count">19 entries</div></div>
+<div class="knowledge-node"><span class="node-glyph">🍄</span><div class="node-name">Fungi & Spores</div><div class="node-count">5 entries</div></div>
+<div class="knowledge-node"><span class="node-glyph">✨</span><div class="node-name">Correspondences</div><div class="node-count">31 entries</div></div>
+<div class="knowledge-node"><span class="node-glyph">🌊</span><div class="node-name">Water & Tides</div><div class="node-count">8 entries</div></div>
+<div class="knowledge-node"><span class="node-glyph">🦋</span><div class="node-name">Liminal Things</div><div class="node-count">14 entries</div></div>
+<div class="knowledge-node"><span class="node-glyph">🪨</span><div class="node-name">Stones & Earth</div><div class="node-count">9 entries</div></div>
+</div>
+<div class="parchment-card"><div class="entry-tag">Featured Entry</div><div class="entry-title">On the Doctrine of Signatures</div><div class="entry-body">The old herbalists believed that plants announce their purpose by their appearance — walnut resembles the brain, lungwort the lung, eyebright the eye. Whether literally true or not, this is a powerful framework for noticing. <em>What does a thing look like it wants to do?</em> This is pattern recognition dressed in poetry, and I think both readings are valid at once.</div></div>
+</div>
+<div id="section-experiments" class="section">
+<div class="section-header"><h2>The Experiment Log</h2><p>trials, errors, and the occasional accidental success</p></div>
+<div class="parchment-card" style="padding:1.5rem 2rem">
+<div class="experiment-row"><div class="exp-status ongoing"></div><div class="exp-meta"><div class="exp-title">Dream Journaling: 30-Day Trial</div><div class="exp-desc">Recording dreams immediately upon waking, before any screens or speech. Testing whether detail and recall improve with consistent practice.</div></div><span class="exp-label ongoing">Ongoing</span></div>
+<div class="experiment-row"><div class="exp-status complete"></div><div class="exp-meta"><div class="exp-title">Foraging with Intent: Autumn Edition</div><div class="exp-desc">Collected, identified, and pressed 14 local plant species before the first frost. Cross-referenced with three field guides. Found two that disagreed on everything.</div></div><span class="exp-label complete">Complete</span></div>
+<div class="experiment-row"><div class="exp-status ongoing"></div><div class="exp-meta"><div class="exp-title">Reading by Season Only</div><div class="exp-desc">Choosing books by what feels appropriate to the current season. Currently: ghost stories, preservation recipes, anything with fog in it.</div></div><span class="exp-label ongoing">Ongoing</span></div>
+<div class="experiment-row"><div class="exp-status paused"></div><div class="exp-meta"><div class="exp-title">Making a Tincture of Mugwort</div><div class="exp-desc">Collected in late summer, steeped in grain alcohol, now waiting. The hardest part of alchemy is patience. Currently at week six of eight.</div></div><span class="exp-label paused">Steeping</span></div>
+</div>
+</div>
+<div id="section-discoveries" class="section">
+<div class="section-header"><h2>Record of Discovery</h2><p>things found that cannot be unfound</p></div>
+<div class="parchment-card"><div class="discovery-timeline">
+<div class="discovery-item"><div class="discovery-when">Samhain, this year</div><div class="discovery-title">The Veil Is Metaphor and Also Not</div><div class="discovery-body">Spent the evening alone in the yard with candles and found that the stillness was different from ordinary quiet. Not mystical necessarily — but different. Worth noting.</div></div>
+<div class="discovery-item"><div class="discovery-when">Late September</div><div class="discovery-title">Mushrooms Appear Where Lightning Struck</div><div class="discovery-body">Mycorrhizal networks can be shocked into fruiting by electrical discharge. There's a metaphor here about trauma and blooming that I'm not quite ready to write yet, but I'm leaving this marker.</div></div>
+<div class="discovery-item"><div class="discovery-when">August, waning gibbous</div><div class="discovery-title">Some Words Have No Translation</div><div class="discovery-body"><em>Mamihlapinatapai.</em> The wordless look shared by two people who both want something but neither will initiate. Languages name what cultures need named.</div></div>
+<div class="discovery-item"><div class="discovery-when">Midsummer</div><div class="discovery-title">Foxes Use the Earth's Magnetic Field to Hunt</div><div class="discovery-body">They align themselves north-northeast before pouncing into snow. What else is moving around us along lines we can't feel?</div></div>
+</div></div>
+</div>
+</main>
+<footer>✦ here be knowledge, half-formed and wholly meant ✦</footer>
+</div>
+<script>
+function showSection(name){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+document.getElementById('section-'+name).classList.add('active');
+document.getElementById('tab-'+name).classList.add('active');
+document.getElementById('nav-'+name).classList.add('active');
+}
+</script>
 </body>
 </html>
