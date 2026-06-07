@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Path of Signs Mini App</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <aside>
+    <div class="brand"><div class="sigil">🌙🗝️🌊</div><h1>Path of Signs</h1><p>Follow the Path. Trust the Tide.</p></div>
+    <button class="nav active" data-page="home">Home</button>
+    <button class="nav" data-page="resonance">Resonance Reminder</button>
+    <button class="nav" data-page="crystals">Crystal Library</button>
+    <button class="nav" data-page="signs">Signs Log</button>
+    <button class="nav" data-page="symbols">Symbol Library</button>
+    <button class="nav" data-page="moon">Moon Notes</button>
+    <button class="nav" data-page="practices">Practices</button>
+    <button class="nav" data-page="export">Backup / Restore</button>
+  </aside>
+  <main>
+    <section id="home" class="page active">
+      <h2>Path of Signs</h2>
+      <div class="card"><h3>Follow the Path. Trust the Tide.</h3><p>This is my personal digital grimoire: part knowledge library, part journal, part experiment log, and part record of discovery.</p><blockquote>What are some traditional uses and meanings?<br>Which ones resonate with me?</blockquote><p><strong>My goal is not to become someone else. My goal is to enrich an already beautiful life.</strong></p></div>
+      <div class="symbols"><div>🗝️<span>Key</span></div><div>🛤️<span>Path</span></div><div>🌊<span>Tide</span></div><div>🪞<span>Mirror</span></div><div>🪶<span>Feather</span></div></div>
+    </section>
+    <section id="resonance" class="page"><h2>Resonance Reminder</h2><div class="card"><p>A grounding check-in before reading signs, pulling cards, doing rituals, or asking for guidance.</p><label>Where am I right now?</label><textarea data-save="resonance.current"></textarea><label>What am I seeking?</label><textarea data-save="resonance.seeking"></textarea><label>Reminder to myself</label><textarea data-save="resonance.reminder">I do not need to force myself into joy. I only need to move one step softer, clearer, and more honest.</textarea><button class="save">Save Notes</button></div></section>
+    <section id="crystals" class="page"><div class="topline"><h2>Crystal Library</h2><button onclick="addCrystal()">+ Add Crystal</button></div><p class="hint">Cards stay compact. Open each section when you want to read or edit details. Add your own photo for each stone.</p><div id="crystalList" class="crystal-stack"></div></section>
+    <section id="signs" class="page"><div class="topline"><h2>Signs & Synchronicities</h2><button onclick="addSign()">+ Add Sign</button></div><div id="signList"></div></section>
+    <section id="symbols" class="page"><div class="topline"><h2>Symbol Library</h2><button onclick="addSymbol()">+ Add Symbol</button></div><div id="symbolList" class="grid"></div></section>
+    <section id="moon" class="page"><div class="topline"><h2>Moon Notes</h2><button onclick="addMoon()">+ Add Moon Entry</button></div><div id="moonList"></div></section>
+    <section id="practices" class="page"><div class="topline"><h2>Practices & Rituals</h2><button onclick="addPractice()">+ Add Practice</button></div><div id="practiceList"></div></section>
+    <section id="export" class="page"><h2>Backup / Restore</h2><div class="card"><h3>Backup your grimoire</h3><p>This app saves to your browser. Before changing computers, click backup and save the file somewhere safe.</p><button onclick="downloadBackup()">Download Backup</button></div><div class="card"><h3>Restore from backup</h3><input type="file" id="restoreFile" accept=".json"/><button onclick="restoreBackup()">Restore Backup</button></div><div class="card danger"><h3>Careful</h3><button onclick="clearAll()">Clear All Saved Data</button></div></section>
+  </main>
+<script src="script.js"></script>
+</body>
+</html>
